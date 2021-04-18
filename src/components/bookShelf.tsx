@@ -34,9 +34,7 @@ export function BookShelfs(props: ShelfProps) {
                         <div className={style.bookshelf}>
                             <h2 className={style.bookshelftitle}>{props.Nome}</h2>
                             <div className={style.bookshelfbooks}>
-                                <ol className={style.booksgrid}>
                                     <BookComponent BookList={props.BookList}/>
-                                </ol>
                             </div>
                         </div>
                     </div>

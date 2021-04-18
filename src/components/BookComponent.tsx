@@ -1,5 +1,8 @@
 import { useContext } from 'react';
 import { bookcontext } from "../Contexts/bookContext";
+import { DesejolerContext } from '../Contexts/desejoContext';
+import { JaliContext } from '../Contexts/jaContext';
+import { LendoAtualContext } from '../Contexts/lendoContext';
 import style from '../styles/global.module.css'
 
 
@@ -12,48 +15,43 @@ interface lista {
 }
 
 interface bookComponent {
-
     BookList: Array<lista>;
-
 }
-
-
 
 export function BookComponent(props: bookComponent) {
 
-    
-   
 
-    const { AttLendo,
-        AttDesejoler, 
-        AttJaterminei, 
-        Desejoler,
-        Jaterminei,
-        LendoAtual} = useContext(bookcontext)
+    const {SetLendo,LendoAtual} = useContext(LendoAtualContext)
+    const {DesejoLer,SetDesejoLer} = useContext(DesejolerContext)
+    const {SetJali,JaLi} = useContext(JaliContext)
         
-
-
-       
 
         const remove = (shelf:string, index:number) => {
 
             console.log("fui chamado", shelf, index)
 
+            
+
             if(shelf === "LendoAtual"){
                 const newarray = [...LendoAtual]
                 newarray.splice(index,1)
-                AttLendo(newarray)
+                SetLendo(newarray)
+                
+                
             }
             if(shelf === "Desejoler"){
-                const newarray = [...Desejoler]
+                const newarray = [...DesejoLer]
                 newarray.splice(index,1)
-                AttDesejoler(newarray)
+                SetDesejoLer(newarray)
+                
             }
             if(shelf === "Jaterminei"){
-
-                const newarray = [...Jaterminei]
+                
+                const newarray = [...JaLi]
                 newarray.splice(index,1)
-                AttJaterminei(newarray)
+                SetJali(newarray)
+              
+                
 
             }
         }
@@ -61,42 +59,37 @@ export function BookComponent(props: bookComponent) {
         const ChangeBookEvent = (index:number, id:string, name:string, value:string, shelfID:string,thumbnail:string, authors:Array<string>) => {
             
             if(value === "LendoAtualmente"){
+                SetLendo((LendoAtual:Array<lista>) => [...LendoAtual, {id:id, title:name, ShelfID: "LendoAtual", thumbnail:thumbnail, authors:authors }])
                 remove(shelfID,index)
-                AttLendo((LendoAtual:Array<lista>) => [...LendoAtual, {id:id, title:name, ShelfID: "LendoAtual", thumbnail:thumbnail, authors:authors }])
-                remove(shelfID,index)
-                
                 
                 
             }
             if(value === "DesejoLer"){
-                console.log(shelfID)
+                SetDesejoLer((DesejoLer:Array<lista>) => [...DesejoLer, {id:id, title:name, ShelfID: "Desejoler", thumbnail:thumbnail, authors:authors }])
                 remove(shelfID,index)
-                AttDesejoler((DesejoLer:Array<lista>) => [...DesejoLer, {id:id, title:name, ShelfID: "Desejoler", thumbnail:thumbnail, authors:authors }])
-                remove(shelfID,index)
+               
                
                
             }
             if(value === "JaLi"){
                 
-                
-                AttJaterminei((Jaterminei:Array<lista>) => [...Jaterminei, {id:id, title:name, ShelfID: "Jaterminei", thumbnail:thumbnail, authors:authors }])
+                SetJali((JaLi:Array<lista>) => [...JaLi, {id:id, title:name, ShelfID: "Jaterminei", thumbnail:thumbnail, authors:authors }])
                 remove(shelfID,index)
+                
                 
             }
 
             if(value === "none"){
                 remove(shelfID,index)
             }
+            
         }
-        
-        
-        
-        
 
+
+   
     const listitem = props.BookList.map((itens, index) =>
 
         
-
         <li key={itens.id}>
             
             <div className={style.book}>
@@ -111,26 +104,20 @@ export function BookComponent(props: bookComponent) {
                             <option value="JaLi">Já li</option>
                             <option value="none">Excluir</option>
                         </select>
-
+                        
                         
                     </div>
                     
                 </div>
                 <div className={style.booktitle}>{itens.title}</div>
-                <div className={style.bookauthors}>{itens.authors}</div>
-
-               
-               
+                <div>{itens.authors.map((authors) => 
+                    <div className={style.bookauthors}>{authors}</div>
+                )}</div>
             </div>
-
         </li>)
-
-
     return (
         <ol className={style.booksgrid}>
             {listitem}
         </ol>
-
-
     );
 }
